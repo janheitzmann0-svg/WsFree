@@ -1,82 +1,85 @@
-// LocalStorage persistence wrapper.
+// LocalStorage persistence — one slot per submodule.
 //
-// Every persisted object carries `schemaVersion`. No migration logic
-// is provided yet; the field is reserved for future use.
+// Storage key:    "bauphysik.v1"
+// On-disk shape:  {
+//   schemaVersion: 1,
+//   uvalueQuickCalc:           { … }   // Submodule 1.1 state
+//   uvalueQuickCalcInhomog:    { … }   // Submodule 1.2 state
+//   // future slots get their own keys
+// }
 //
-// All data lives under a single namespaced key. Stored payloads are
-// JSON-encoded.
+// Backward compatibility:
+//   The old shape (before multi-module persistence) had `uvalueQuickCalc`
+//   already in place under the same top-level key, with `theta_i_C` /
+//   `theta_e_C` either present or missing. Both cases load cleanly here.
 
-const STORAGE_KEY = "bauphysik.v1";
-const SCHEMA_VERSION = 1;
+const KEY = "bauphysik.v1";
 
-/**
- * Default empty state.
- */
-export function emptyState() {
-  return {
-    schemaVersion: SCHEMA_VERSION,
-    uvalueQuickCalc: {
-      componentName: "",
-      heatFlowDirection: "horizontal",
-      layers: [],
-    },
-  };
-}
-
-/**
- * Load full state. Returns `emptyState()` if nothing persisted
- * or the persisted data cannot be parsed.
- */
-export function loadState() {
+function readRaw() {
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return emptyState();
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return null;
     const parsed = JSON.parse(raw);
-    if (!parsed || typeof parsed !== "object") return emptyState();
-    if (parsed.schemaVersion !== SCHEMA_VERSION) {
-      // Future migration logic would go here.
-      return emptyState();
-    }
-    // Backfill any missing sections so callers can rely on shape.
-    return { ...emptyState(), ...parsed };
-  } catch (err) {
-    console.warn("[persistence] load failed; falling back to empty state.", err);
-    return emptyState();
+    if (!parsed || typeof parsed !== "object") return null;
+    return parsed;
+  } catch {
+    return null;
   }
 }
 
-/**
- * Save full state.
- */
-export function saveState(state) {
+function writeRaw(obj) {
   try {
-    const payload = { ...state, schemaVersion: SCHEMA_VERSION };
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-  } catch (err) {
-    console.warn("[persistence] save failed.", err);
+    localStorage.setItem(KEY, JSON.stringify(obj));
+  } catch {
+    /* quota / disabled storage — silently swallow */
   }
 }
 
-/**
- * Convenience: read/write the U-value quick-calc slice.
- */
+function ensureRoot() {
+  const r = readRaw() || {};
+  if (r.schemaVersion !== 1) r.schemaVersion = 1;
+  return r;
+}
+
+// ── Submodule 1.1 — homogeneous quick calc ──────────────────────────
+
 export function loadQuickCalc() {
-  return loadState().uvalueQuickCalc;
+  const r = readRaw();
+  if (!r || !r.uvalueQuickCalc) return null;
+  return r.uvalueQuickCalc;
 }
 
-export function saveQuickCalc(quickCalc) {
-  const state = loadState();
-  state.uvalueQuickCalc = quickCalc;
-  saveState(state);
+export function saveQuickCalc(state) {
+  const r = ensureRoot();
+  r.uvalueQuickCalc = state;
+  writeRaw(r);
 }
+
+// ── Submodule 1.2 — inhomogeneous quick calc ────────────────────────
+
+export function loadQuickCalcInhomog() {
+  const r = readRaw();
+  if (!r || !r.uvalueQuickCalcInhomog) return null;
+  return r.uvalueQuickCalcInhomog;
+}
+
+export function saveQuickCalcInhomog(state) {
+  const r = ensureRoot();
+  r.uvalueQuickCalcInhomog = state;
+  writeRaw(r);
+}
+
+// ── Reset ───────────────────────────────────────────────────────────
 
 /**
- * Wipe everything.
+ * Clear *all* module state from disk. Use sparingly — Reset buttons
+ * in individual modules clear only their own slot via the per-slot
+ * save() with a fresh-default state.
  */
 export function resetAll() {
   try {
-    window.localStorage.removeItem(STORAGE_KEY);
-  } catch (err) {
-    console.warn("[persistence] reset failed.", err);
+    localStorage.removeItem(KEY);
+  } catch {
+    /* ignore */
   }
 }

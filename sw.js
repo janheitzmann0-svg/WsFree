@@ -9,7 +9,7 @@
  * evicted on activate.
  */
 
-const CACHE_VERSION = "laczyprime-v4-20260516";
+const CACHE_VERSION = "laczyprime-v5-20260517";
 
 const APP_SHELL = [
   "./",
@@ -18,8 +18,15 @@ const APP_SHELL = [
   "./notation.js",
   "./reference-data.js",
   "./uvalue.js",
+  "./uvalue-inhomogeneous.js",
   "./temperature-profile.js",
   "./persistence.js",
+  "./ui-helpers.js",
+  "./material-picker.js",
+  "./module-registry.js",
+  "./module-index.js",
+  "./module-uvalue-homogeneous.js",
+  "./module-uvalue-inhomogeneous.js",
   "./uvalue-app.js",
   "./manifest.webmanifest",
   "./icon-192.png",
@@ -30,7 +37,6 @@ const APP_SHELL = [
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_VERSION).then((cache) =>
-      // Use addAll with no-store fetches so we get fresh shell on first install.
       Promise.all(
         APP_SHELL.map((url) =>
           fetch(url, { cache: "no-store" })
@@ -42,10 +48,10 @@ self.addEventListener("install", (event) => {
       )
     )
   );
-  // Note: we intentionally do NOT call self.skipWaiting() here.
-  // The page shows an "update available" banner; the user clicks Reload,
-  // the page posts SKIP_WAITING, then we activate. This keeps the user
-  // in control of when the page replaces itself.
+  // Intentionally NOT calling self.skipWaiting() here — the app shows
+  // an update-available banner; user clicks Reload → page posts
+  // SKIP_WAITING → we activate. Keeps the user in control of when
+  // their page replaces itself.
 });
 
 self.addEventListener("message", (event) => {
@@ -68,7 +74,6 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   const req = event.request;
-  // Only handle GET, same-origin
   if (req.method !== "GET") return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;

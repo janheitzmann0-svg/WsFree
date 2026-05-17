@@ -36,6 +36,16 @@ export const SHARED_POOL = Object.freeze({
     displayUnit: "m²",
     plausibleRange: { min: 0, warn: "area must be positive" },
   },
+  area_fraction: {
+    id: "area_fraction",
+    symbol: "f",
+    code: "f",
+    display: "f",
+    name: "Area fraction",
+    siUnit: "—",
+    displayUnit: "—",
+    plausibleRange: { min: 0, max: 1, warn: "must lie in [0, 1]" },
+  },
 
   // ── Material thermal properties ─────────────────────────────────
   lambda_thermal_conductivity: {
@@ -47,6 +57,15 @@ export const SHARED_POOL = Object.freeze({
     siUnit: "W/(m·K)",
     displayUnit: "W/(m·K)",
     plausibleRange: { min: 0.02, max: 5.0, warn: "outside typical building materials" },
+  },
+  lambda_effective: {
+    id: "lambda_effective",
+    symbol: "λ_eff",
+    code: "lambda_eff",
+    display: "λ<sub>eff</sub>",
+    name: "Effective thermal conductivity (area-weighted)",
+    siUnit: "W/(m·K)",
+    displayUnit: "W/(m·K)",
   },
   density: {
     id: "density",
@@ -79,6 +98,26 @@ export const SHARED_POOL = Object.freeze({
     siUnit: "(m²·K)/W",
     displayUnit: "(m²·K)/W",
     plausibleRange: { min: 0 },
+  },
+  thermal_resistance_total_upper: {
+    id: "thermal_resistance_total_upper",
+    symbol: "R_T'",
+    code: "R_T_upper",
+    // Unicode prime ′ (U+2032) outside the subscript.
+    display: "R<sub>T</sub>′",
+    name: "Upper bound of total thermal resistance",
+    siUnit: "(m²·K)/W",
+    displayUnit: "(m²·K)/W",
+  },
+  thermal_resistance_total_lower: {
+    id: "thermal_resistance_total_lower",
+    symbol: "R_T''",
+    code: "R_T_lower",
+    // Unicode double prime ″ (U+2033)
+    display: "R<sub>T</sub>″",
+    name: "Lower bound of total thermal resistance",
+    siUnit: "(m²·K)/W",
+    displayUnit: "(m²·K)/W",
   },
   surface_resistance_internal: {
     id: "surface_resistance_internal",
@@ -174,7 +213,6 @@ export const SHARED_POOL = Object.freeze({
 
 // ── Module 1 — module-specific additions (will grow with submodules) ──
 export const MODULE_1_POOL = Object.freeze({
-  // Submodule 1.1 — only one module-specific quantity so far:
   heat_flow_direction: {
     id: "heat_flow_direction",
     symbol: "—",
@@ -183,7 +221,6 @@ export const MODULE_1_POOL = Object.freeze({
     name: "Heat flow direction",
     siUnit: "—",
     displayUnit: "—",
-    // Categorical, not a number. Enumerated values:
     enumValues: ["upward", "horizontal", "downward"],
   },
 });

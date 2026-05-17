@@ -1258,3 +1258,509 @@ input[type="radio"]:focus-visible {
     to   { opacity: 1; transform: translateY(0); }
   }
 }
+
+/* ============================================================
+ * SHELL ADDITIONS — module router landing + per-module header
+ * Added with v5 / Submodule 1.2.
+ * ============================================================ */
+
+/* The shell now provides a slim breadcrumb-only header. The big
+ * chapter-mark + module title is rendered inside each module
+ * via .moduleHead, so submodules can each have their own number.
+ */
+
+/* Breadcrumb link inside the shell header */
+.crumbLink {
+  color: var(--fg-muted);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+.crumbLink:hover {
+  border-bottom-color: var(--line-strong);
+}
+.crumbCurrent {
+  color: var(--fg-secondary);
+}
+
+/* The mount node the router renders into */
+.moduleMount {
+  display: block;
+}
+
+/* ── per-module header (chapter mark + title + subtitle) ──────── */
+.moduleHead {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 28px;
+  align-items: start;
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+.moduleChapter {
+  font-family: var(--serif-font);
+  font-size: 72px;
+  font-weight: 400;
+  line-height: 0.85;
+  color: var(--accent);
+  letter-spacing: -0.025em;
+  padding-top: 4px;
+  font-feature-settings: "lnum" 1;
+}
+.moduleHeadText { min-width: 0; }
+.moduleTitle {
+  font-family: var(--serif-font);
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0 0 8px;
+  color: var(--fg);
+}
+.moduleTitle em {
+  font-style: italic;
+  color: var(--fg-secondary);
+}
+.moduleSub {
+  margin: 0;
+  color: var(--fg-muted);
+  font-size: 14px;
+  max-width: 60ch;
+  line-height: 1.55;
+}
+
+@media (max-width: 560px) {
+  .moduleHead {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .moduleChapter {
+    font-size: 44px;
+  }
+  .moduleTitle {
+    font-size: 24px;
+  }
+}
+
+/* ── loading / error notes ───────────────────────────────────── */
+.loadingNote, .errorNote {
+  color: var(--fg-muted);
+  font-size: 14px;
+  text-align: center;
+  padding: 40px 16px;
+}
+.errorNote { color: var(--warn); }
+
+/* ── module index — landing tiles ────────────────────────────── */
+.modGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+.modTile {
+  display: block;
+  text-align: left;
+  background: var(--bg-block);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 22px 22px 24px;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.15s, border-color 0.15s;
+  box-shadow: var(--shadow-soft);
+  font-family: inherit;
+  color: inherit;
+  position: relative;
+  min-height: 158px;
+}
+.modTile:not(:disabled):hover {
+  transform: translateY(-1px);
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-lifted);
+}
+.modTile:not(:disabled):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.modTile--soon {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.modTileNum {
+  font-family: var(--serif-font);
+  font-size: 32px;
+  line-height: 1;
+  color: var(--accent);
+  margin-bottom: 12px;
+  font-feature-settings: "lnum" 1;
+}
+.modTileTitle {
+  font-family: var(--serif-font);
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  color: var(--fg);
+  margin-bottom: 6px;
+  line-height: 1.25;
+}
+.modTileSub {
+  font-size: 13px;
+  color: var(--fg-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+.modTileBadge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  padding: 3px 7px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+}
+
+/* ============================================================
+ * SUBMODULE 1.2 — inhomogeneous U-value
+ * ============================================================ */
+
+/* ── add-layer button row ────────────────────────────────────── */
+.addBtnRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.addBtnInhom {
+  /* Visual distinction from "+ Homogeneous layer" */
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.addBtnInhom:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ── layer cards (replaces the row-table for 1.2) ────────────── */
+.layerCards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.layerCard {
+  background: var(--bg-elevated);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px 16px;
+  box-shadow: var(--shadow-soft);
+}
+.layerCard--inhom {
+  border-left: 3px solid var(--accent);
+  padding-left: 14px;
+}
+
+.layerCardHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line-hairline);
+}
+.layerCardNum {
+  font-family: var(--serif-font);
+  font-size: 20px;
+  color: var(--accent);
+  min-width: 22px;
+  font-feature-settings: "lnum" 1;
+}
+.layerCardType {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  flex: 1;
+}
+.layerCard .rmBtn {
+  margin-left: auto;
+}
+
+.layerCardBody {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 14px 16px;
+  align-items: end;
+}
+.layerCard--inhom .layerCardBody {
+  grid-template-columns: 1fr;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.fieldGroupMat {
+  /* material picker may need more width */
+  min-width: 0;
+}
+.fieldLabel {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.fieldUnit {
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--fg-faint);
+  text-transform: none;
+}
+
+@media (max-width: 560px) {
+  .layerCardBody {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── regions sub-block (inside an inhomogeneous card) ────────── */
+.regions {
+  background: var(--accent-soft);
+  border-radius: var(--radius);
+  padding: 12px 14px 14px;
+  margin-top: 4px;
+}
+
+.regionsHead {
+  margin-bottom: 10px;
+}
+.regionsTitle {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--fg-secondary);
+  margin-bottom: 4px;
+}
+.regionsSub {
+  font-size: 12px;
+  color: var(--fg-muted);
+  line-height: 1.45;
+}
+
+.regionRow {
+  display: grid;
+  grid-template-columns: auto 2fr 1.2fr 1fr auto;
+  gap: 10px;
+  align-items: end;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line-hairline);
+}
+.regionRow:last-child { border-bottom: none; }
+
+.regionLetter {
+  font-family: var(--serif-font);
+  font-style: italic;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--accent);
+  padding-bottom: 8px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.regionMat,
+.regionLam,
+.regionFrac,
+.regionAct {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.regionLam input,
+.regionFrac input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+}
+.regionMat {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+.regionUnit {
+  font-size: 11px;
+  color: var(--fg-faint);
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .regionRow {
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      "let mat act"
+      "let lam lam"
+      "let frac frac";
+  }
+  .regionLetter { grid-area: let; padding-top: 6px; }
+  .regionMat    { grid-area: mat; }
+  .regionLam    { grid-area: lam; }
+  .regionFrac   { grid-area: frac; }
+  .regionAct    { grid-area: act; }
+}
+
+.regionsFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line-hairline);
+}
+.fractionSum {
+  font-size: 13px;
+  font-family: var(--num-font);
+  font-feature-settings: "tnum" 1;
+}
+.fractionSum.is-ok .fractionSumValue {
+  color: var(--accent);
+  font-weight: 600;
+}
+.fractionSum.is-warn .fractionSumValue {
+  color: var(--warn);
+  font-weight: 600;
+}
+.fractionSumLabel { color: var(--fg-muted); }
+.fractionSumHint { color: var(--warn); font-family: var(--ui-font); }
+
+.regionsBtns {
+  display: flex;
+  gap: 8px;
+}
+.miniBtn {
+  font-family: inherit;
+  font-size: 12px;
+  padding: 4px 10px;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-block);
+  color: var(--fg-secondary);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.miniBtn:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.rmBtnSmall {
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--fg-muted);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.rmBtnSmall:hover {
+  color: var(--warn);
+  border-color: var(--warn);
+}
+
+/* ── 1.2-specific results: section / layer headings in calc-steps ── */
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 14px;
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px dashed var(--line-hairline);
+}
+.sectionLetter {
+  font-family: var(--serif-font);
+  font-style: italic;
+  color: var(--accent);
+  font-size: 16px;
+}
+.sectionFrac {
+  font-size: 12px;
+  color: var(--fg-muted);
+  font-family: var(--num-font);
+  font-feature-settings: "tnum" 1;
+}
+
+.calcIntro,
+.calcText {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--fg-secondary);
+  margin: 0 0 10px;
+}
+.calcText { margin-top: 4px; }
+
+.calcAside {
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  margin: 4px 0 0 12px;
+  padding-left: 10px;
+  border-left: 2px solid var(--line-hairline);
+  line-height: 1.5;
+}
+
+.math {
+  font-family: var(--serif-font);
+  font-style: italic;
+}
+
+/* ── simplified-profile warning ──────────────────────────────── */
+.profileWarn {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--fg-secondary);
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  padding: 8px 12px;
+  margin: 0 0 14px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.qSub {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin-left: 8px;
+}
+
+/* ── inhomogeneous-band hatch in the temperature diagram ─────── */
+.layerBandInhom {
+  /* layerBandA/B already provides base color; hatch is drawn over via <pattern> */
+}
+.inhomHatchLine {
+  stroke: var(--line-strong);
+  stroke-width: 1;
+  opacity: 0.5;
+}
+
+@media (prefers-color-scheme: dark) {
+  .inhomHatchLine {
+    stroke: var(--line-strong);
+    opacity: 0.65;
+  }
+}
